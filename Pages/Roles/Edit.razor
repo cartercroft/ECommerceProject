@@ -1,0 +1,68 @@
+﻿@using ECommerceProject.Services.Roles
+@using Microsoft.AspNetCore.Identity
+@using CroftBlazorComponents.Services
+@inject IRoleService _roleService
+@inject ToastService _toastService
+@layout MainLayout
+@page "/Roles/Add"
+@page "/Roles/Edit/{RoleId}"
+
+@if(Role == null)
+{
+    
+}
+else if (EditType == EditTypes.Add)
+{
+    <EditForm Model="@Role" OnValidSubmit="HandleValidAddSubmit">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@Role.Name" />
+        </div>
+        <button type="Submit" class="btn btn-success">
+            Add
+        </button>
+    </EditForm>
+}
+else if(EditType == EditTypes.Edit)
+{
+    <EditForm Model="@Role" OnValidSubmit="HandleValidEditSubmit">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@Role.Name" />
+            <ValidationMessage For=@(() => Role.Name) />
+        </div>
+        <button type="Submit" class="btn btn-success">
+            Save
+        </button>
+    </EditForm>
+}
+@code {
+    [Parameter]
+    public string RoleId { get; set; }
+    public IdentityRole Role { get; set; }
+    private EditTypes EditType { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        if(!string.IsNullOrWhiteSpace(RoleId))
+        {
+            EditType = EditTypes.Edit;
+            Role = await _roleService.Get(RoleId);
+        }
+        else
+        {
+            Role = new IdentityRole();
+            EditType = EditTypes.Add;
+        }
+        await base.OnInitializedAsync();
+    }
+    public async void HandleValidAddSubmit()
+    {
+        _toastService.ShowToast("Successfully Created Role!", ToastLevel.Success);
+        await _roleService.Add(Role);
+    }
+    public async void HandleValidEditSubmit()
+    {
+        await _roleService.Update(Role);
+        _toastService.ShowToast($"Successfully Saved changes to Role {Role.Name}!", ToastLevel.Success);
+    }
+}

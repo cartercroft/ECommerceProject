@@ -1,0 +1,56 @@
+﻿@using ECommerceProject.Services.Roles
+@using Microsoft.AspNetCore.Identity
+@using ECommerceProject.Services.UserService
+@using Microsoft.EntityFrameworkCore
+
+@layout MainLayout
+
+@inject IUserService _userService
+@inject IRoleService _roleService
+@page "/Users/Edit/{UserId}"
+@page "/Users/Add"
+<EditForm Model="@CurrentUser" OnValidSubmit="HandleValidSubmit">
+    
+    @foreach(var role in AllRoles)
+    {
+    }
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+    private IdentityUser? CurrentUser { get; set; } = new();
+    private IEnumerable<IdentityRole?> AllRoles { get; set; } = new List<IdentityRole>();
+    private List<IdentityUserRole<string>> UserRoles { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        CurrentUser = await _userService.Get(UserId);
+        if(CurrentUser == null)
+        {
+            CurrentUser = new();
+        }
+        AllRoles = await _roleService.GetAll();
+        UserRoles = await _roleService.GetRolesForUser(CurrentUser);
+        await base.OnParametersSetAsync();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    protected async Task HandleValidSubmit()
+    {
+
+    }
+
+    private bool UserHasRole(IdentityRole? role)
+    {
+        if(UserRoles.Any())
+        {
+            return UserRoles.Where(x => x.RoleId == role?.Id).First() != null;    
+        }
+        return false;
+    }
+}

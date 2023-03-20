@@ -1,0 +1,31 @@
+﻿@page "/Users/List"
+@inject ApplicationDbContext _context
+@using ECommerceProject.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using CroftBlazorComponents.Grids
+@layout MainLayout
+
+
+<AuthorizeView>
+    <Authorized>
+        <Grid Items="@Users">
+            <Columns Context="columnsContext">
+                <GridColumn HeaderText="Email" Field="@(nameof(IdentityUser.Email))"></GridColumn>
+                <GridColumn Context="columnContext">
+                    @{
+                        <a href="/Users/Edit/@columnContext.Id">Edit</a>
+                    }
+                </GridColumn>
+            </Columns>
+        </Grid>
+    </Authorized>
+</AuthorizeView>
+@code {
+    protected List<IdentityUser> Users { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await _context.Users.ToListAsync();
+    }
+}

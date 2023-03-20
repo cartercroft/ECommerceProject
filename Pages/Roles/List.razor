@@ -1,0 +1,31 @@
+﻿@page "/Roles/List"
+@layout MainLayout
+@using ECommerceProject.Services.Roles
+@using Microsoft.AspNetCore.Identity
+@inject IRoleService _roleService
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles = "Admin")]
+
+<CroftBlazorComponents.Grids.Grid Items="@AllRoles">
+    <Columns>
+        <CroftBlazorComponents.Grids.GridColumn Field="@nameof(IdentityRole.Name)" HeaderText="Name"></CroftBlazorComponents.Grids.GridColumn>
+        <AuthorizeView Roles="Admin" Context="authorizeContext">
+            <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                @{
+                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-warning" @onclick=@(() => _navManager.NavigateTo($"/Roles/Edit/{columnContext.Id}"))>Edit</button>
+                }
+            </CroftBlazorComponents.Grids.GridColumn>
+        </AuthorizeView>
+    </Columns>
+</CroftBlazorComponents.Grids.Grid> 
+
+@code {
+    protected List<IdentityRole> AllRoles { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllRoles = (await _roleService.GetAll()).ToList();
+        await base.OnInitializedAsync();
+    }
+}

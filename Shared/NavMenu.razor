@@ -1,0 +1,68 @@
+﻿
+<div class="sidebar d-flex flex-column align-align-items-end">
+    <div class="top-row ps-3 navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">ECommerceProject</a>
+            <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <nav class="@NavMenuCssClass h-100" @onclick="ToggleNavMenu">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Roles/List">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Roles
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Users/List">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Users
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </nav>
+    <div class="nav-item px-3 mt-auto @NavMenuCssClass">
+        <AuthorizeView>
+            <Authorized>
+                <div>
+                    <a class="d-block" href="Identity/Account/Manage">Hello, @context.User.Identity?.Name!</a>
+                </div>
+                <form method="post" action="Identity/Account/LogOut">
+                    <button type="submit" class="nav-link btn btn-link">Log out</button>
+                </form>
+            </Authorized>
+            <NotAuthorized>
+                <div>
+                    <a class="d-block text-center" href="Identity/Account/Register">Register</a>
+                </div>
+                <div>
+                    <a class="d-block text-center" href="Identity/Account/Login">Log in</a>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
