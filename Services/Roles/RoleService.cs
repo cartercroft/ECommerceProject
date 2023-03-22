@@ -1,6 +1,7 @@
 ﻿using ECommerceProject.Data;
 using ECommerceProject.Data.Repositories.Roles;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore;
 
 namespace ECommerceProject.Services.Roles
 {
@@ -15,7 +16,7 @@ namespace ECommerceProject.Services.Roles
         {
             return await _repositoryManager.Roles.Get(id);
         }
-        public async Task<IEnumerable<IdentityRole?>?> GetAll()
+        public async Task<List<IdentityRole?>?> GetAll()
         {
             return await _repositoryManager.Roles.GetAll();
         }
@@ -37,12 +38,17 @@ namespace ECommerceProject.Services.Roles
         }
         public async Task<bool> Delete(string id)
         {
-            return await _repositoryManager.Roles.Delete(id);
+            var result = await _repositoryManager.Roles.Delete(id);
+            await _repositoryManager.SaveChangesAsync();
+            return result;
         }
-
-        public async Task<List<IdentityUserRole<string>?>?> GetRolesForUser(IdentityUser user)
+        public List<IdentityRole> GetRolesForUser(IdentityUser user)
         {
-            return (await _repositoryManager.Roles.GetRolesForUser(user))?.ToList();
+            return _repositoryManager.Roles.GetRolesForUser(user);
+        }
+        public async Task<List<IdentityRole>> GetRolesForUserAsync(IdentityUser user)
+        {
+            return await _repositoryManager.Roles.GetRolesForUserAsync(user);
         }
     }
 }

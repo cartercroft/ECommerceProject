@@ -7,13 +7,15 @@
 @page "/Roles/Add"
 @page "/Roles/Edit/{RoleId}"
 
+<h1 class="text-center">Edit Role @(Role != null ? Role.Name : "")</h1>
 @if(Role == null)
 {
-    
+    <div>No Role Found.</div>
 }
 else if (EditType == EditTypes.Add)
 {
-    <EditForm Model="@Role" OnValidSubmit="HandleValidAddSubmit">
+    <EditForm class="responsive-form" Model="@Role" OnValidSubmit="HandleValidAddSubmit">
+        <DataAnnotationsValidator />
         <label>Name:</label>
         <div>
             <InputText @bind-Value="@Role.Name" />
@@ -25,7 +27,8 @@ else if (EditType == EditTypes.Add)
 }
 else if(EditType == EditTypes.Edit)
 {
-    <EditForm Model="@Role" OnValidSubmit="HandleValidEditSubmit">
+    <EditForm class="responsive-form" Model="@Role" OnValidSubmit="HandleValidEditSubmit">
+        <DataAnnotationsValidator />
         <label>Name:</label>
         <div>
             <InputText @bind-Value="@Role.Name" />

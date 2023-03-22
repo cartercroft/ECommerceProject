@@ -3,7 +3,7 @@
     public interface IDataRepository<TModel, TKey>
     {
         public Task<TModel?> Get(TKey id);
-        public Task<IEnumerable<TModel?>?> GetAll();
+        public Task<List<TModel?>?> GetAll();
         public Task<TModel?> Add(TModel model);
         public Task<bool> Delete(TKey id);
         public Task<TModel?> Update(TModel model);

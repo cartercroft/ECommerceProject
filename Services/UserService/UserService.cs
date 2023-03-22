@@ -45,7 +45,7 @@ namespace ECommerceProject.Services.UserService
             return await _userManager.FindByIdAsync(id);
         }
 
-        public Task<IEnumerable<IdentityUser?>?> GetAll()
+        public Task<List<IdentityUser?>?> GetAll()
         {
             return _repositoryManager.Users.GetAll();
         }
@@ -55,6 +55,17 @@ namespace ECommerceProject.Services.UserService
             await _userManager.UpdateAsync(model);
             await _repositoryManager.SaveChangesAsync();
             return await _repositoryManager.Users.Get(model.Id);
+        }
+
+        public async Task<bool> UpdateRolesForUser(IdentityUser user, List<IdentityRole> roles)
+        {
+            //TODO: Don't like this, feels like it strays too far from the pattern.
+            if(_repositoryManager.Users.UpdateRolesForUser(user, roles))
+            {
+                await _repositoryManager.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

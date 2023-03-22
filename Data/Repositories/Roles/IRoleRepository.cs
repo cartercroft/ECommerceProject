@@ -4,6 +4,7 @@ namespace ECommerceProject.Data.Repositories.Roles
 {
     public interface IRoleRepository : IDataRepository<IdentityRole, string>
     {
-        Task<IEnumerable<IdentityUserRole<string>?>?> GetRolesForUser(IdentityUser user);
+        Task<List<IdentityRole>> GetRolesForUserAsync(IdentityUser user);
+        List<IdentityRole> GetRolesForUser(IdentityUser user);
     }
 }

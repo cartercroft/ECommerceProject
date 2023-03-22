@@ -7,11 +7,9 @@
     <Authorized>
         <h1>Hello @context.User?.FindFirstValue(ClaimTypes.Name)</h1>
     </Authorized>
+    <NotAuthorized>
+        <h1>Hello and welcome to ECommerceProject! Sign up <a href="/Identity/Account/Register">here</a>!</h1>
+    </NotAuthorized>
 </AuthorizeView>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
 @code {
 }

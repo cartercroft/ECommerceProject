@@ -15,7 +15,7 @@ namespace ECommerceProject.Data.Repositories.Roles
         {
             return await _context.Roles.FindAsync(id);
         }
-        public async Task<IEnumerable<IdentityRole?>?> GetAll()
+        public async Task<List<IdentityRole>> GetAll()
         {
             return await _context.Roles.ToListAsync();
         }
@@ -35,9 +35,19 @@ namespace ECommerceProject.Data.Repositories.Roles
             return result?.Entity != null;
         }
 
-        public async Task<IEnumerable<IdentityUserRole<string>?>?> GetRolesForUser(IdentityUser user)
+        public async Task<List<IdentityRole>> GetRolesForUserAsync(IdentityUser user)
         {
-            return await _context.UserRoles.Where(x => x.UserId == user.Id).ToListAsync();
+            return await (from userRole in _context.UserRoles
+                          where userRole.UserId == user.Id
+                         join role in _context.Roles on userRole.RoleId equals role.Id
+                         select role).ToListAsync();
+        }
+        public List<IdentityRole> GetRolesForUser(IdentityUser user)
+        {
+            return (from userRole in _context.UserRoles
+                    where userRole.UserId == user.Id
+                   join role in _context.Roles on userRole.RoleId equals role.Id
+                   select role).ToList();
         }
     }
 }

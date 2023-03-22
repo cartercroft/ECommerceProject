@@ -35,7 +35,7 @@ namespace ECommerceProject.Data.Repositories.Users
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<IEnumerable<IdentityUser?>?> GetAll()
+        public async Task<List<IdentityUser?>?> GetAll()
         {
             return await _context.Users.ToListAsync();
         }
@@ -44,6 +44,30 @@ namespace ECommerceProject.Data.Repositories.Users
         {
             var result = _context.Users.Update(model);
             return result?.Entity;
+        }
+         
+        public bool UpdateRolesForUser(IdentityUser user, List<IdentityRole> roles)
+        {
+            try
+            {
+                foreach(var userRole in _context.UserRoles.Where(x => x.UserId == user.Id))
+                {
+                    _context.UserRoles.Remove(userRole);
+                }
+                foreach(var role in roles)
+                {
+                    _context.UserRoles.Add(new IdentityUserRole<string>
+                    {
+                        UserId = user.Id,
+                        RoleId = role.Id
+                    });
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

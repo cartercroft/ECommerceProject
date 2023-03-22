@@ -19,7 +19,24 @@ a, .btn-link {
 }
 
 .content {
+    margin: auto 0;
     padding-top: 1.1rem;
+}
+
+.page {
+    background-color: rgba(165,119,104, .4);
+}
+
+.form-container{
+    min-height: 500px;
+    background-color: red;
+}
+.responsive-form{
+    display: flex;
+    background-color: #DDD;
+    padding: .33em;
+    border-radius: .33em;
+    justify-content: center;
 }
 
 .valid.modified:not([type=checkbox]) {

@@ -6,26 +6,34 @@
 @inject NavigationManager _navManager
 @attribute [Authorize(Roles = "Admin")]
 
-<CroftBlazorComponents.Grids.Grid Items="@AllRoles">
+<h2 class="text-center">Roles List</h2>
+<button @onclick=@(() => _navManager.NavigateTo("/Roles/Add")) class="btn btn-success">Add New</button>
+<CroftBlazorComponents.Grids.Grid Items="@AllRoles" class="w-100">
     <Columns>
         <CroftBlazorComponents.Grids.GridColumn Field="@nameof(IdentityRole.Name)" HeaderText="Name"></CroftBlazorComponents.Grids.GridColumn>
         <AuthorizeView Roles="Admin" Context="authorizeContext">
             <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
                 @{
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <ECommerceProject.Components.DeleteConfirmModal ButtonText="Delete" DeleteCallback=@(() => HandleDelete(columnContext)) ConfirmText=@($"Are you sure you want to delete Role: {columnContext.Name}?")/>
                     <button type="button" class="btn btn-warning" @onclick=@(() => _navManager.NavigateTo($"/Roles/Edit/{columnContext.Id}"))>Edit</button>
                 }
             </CroftBlazorComponents.Grids.GridColumn>
         </AuthorizeView>
     </Columns>
-</CroftBlazorComponents.Grids.Grid> 
+</CroftBlazorComponents.Grids.Grid>
 
-@code {
+    @code {
     protected List<IdentityRole> AllRoles { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         AllRoles = (await _roleService.GetAll()).ToList();
         await base.OnInitializedAsync();
+    }
+    private async void HandleDelete(IdentityRole role)
+    {
+        await _roleService.Delete(role.Id);
+        AllRoles = (await _roleService.GetAll()).ToList();
+        await InvokeAsync(StateHasChanged);
     }
 }

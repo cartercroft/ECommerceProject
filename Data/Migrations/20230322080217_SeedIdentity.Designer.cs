@@ -4,6 +4,7 @@ using ECommerceProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230322080217_SeedIdentity")]
+    partial class SeedIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,83 +24,6 @@ namespace ECommerceProject.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ECommerceProject.Models.Business", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("Businesses");
-                });
-
-            modelBuilder.Entity("ECommerceProject.Models.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BusinessId");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("ECommerceProject.Models.ProductCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductCategories");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -128,22 +54,22 @@ namespace ECommerceProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "af90dc71-a3d9-4141-ae93-dc2221ecbbdb",
-                            ConcurrencyStamp = "444cc572-8a9b-495c-8b27-33fd590bb4a3",
+                            Id = "b8e2992d-9ff8-4162-94e1-74f7d5d29970",
+                            ConcurrencyStamp = "bb06e6b5-0569-4616-b19f-20f3b61ec7d2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2f03a767-0632-474a-99d3-2e447c7007b5",
-                            ConcurrencyStamp = "81091099-b218-4401-8894-c13f7698dfb5",
+                            Id = "b24f9bff-6932-4c9d-8d62-70965891b54c",
+                            ConcurrencyStamp = "b5de3b35-9ee7-477e-b0a3-7c91143ca2ff",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "9aed1ef6-19f5-4f94-b350-df92714bc4ff",
-                            ConcurrencyStamp = "dda63752-2988-4708-b530-c9f9b4575b79",
+                            Id = "ca1f092b-5957-44c3-bbb6-2bc31e7a6ffe",
+                            ConcurrencyStamp = "a6fb97ba-ee0d-4392-9621-e1cfdb62bf14",
                             Name = "Business",
                             NormalizedName = "BUSINESS"
                         });
@@ -241,49 +167,49 @@ namespace ECommerceProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "17936c6e-5307-4f92-bede-c7a917b7797a",
+                            Id = "a382e998-4c02-4ecf-ae92-9aa12cb22fa8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c79a072c-25b7-434b-9787-0bfcd40365c7",
+                            ConcurrencyStamp = "1b2f56fe-a467-4461-a0a9-b6b489923e1f",
                             Email = "carter@admin.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CARTER@ADMIN.COM",
                             NormalizedUserName = "CARTER@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAH5lHouIxfWDj1eQfQw/A8OdgbE10Ri6fDxL+HVAIb86kFNV7Dwidn9ptOCjKuYCA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHDVcXjPgFYDLTKdLmloNsWObDQd9r/LjG8ZGHHNjkQ9wylMhrDPADahj8he2emzyg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1eb81930-895b-47e9-afc8-83131e2ff89d",
+                            SecurityStamp = "2f02e8dd-5ae0-4308-8b53-7c6a096361a8",
                             TwoFactorEnabled = false,
                             UserName = "carter@admin.com"
                         },
                         new
                         {
-                            Id = "6f8f3f9d-6e8d-4ff8-ad83-45ccbf9e208a",
+                            Id = "c746ba10-a8a8-48e3-9089-400b57cffdc1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c12bfe0b-34bc-4767-844c-4bf23bd84e86",
+                            ConcurrencyStamp = "df698c16-8707-4035-b178-79b326287381",
                             Email = "carter@customer.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CARTER@CUSTOMER.COM",
                             NormalizedUserName = "CARTER@CUSTOMER.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAECQ0vMmntngWgWbp+twQnhXYmUBkny7DbIZYtHdjJnHY7AC3wbafen9+zYt4YLXsYw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECUOQvHJEfVOEA4/VQylZ89/wYQ26+1UMRYCk0E2AG0Q4VsHPL4KvZRa2XD/GGAOmg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3fa3adc4-c554-4a2a-a973-ca6c25cfa6c8",
+                            SecurityStamp = "e9ba2de8-9e2f-49d1-887e-a037e308ee08",
                             TwoFactorEnabled = false,
                             UserName = "carter@customer.com"
                         },
                         new
                         {
-                            Id = "25658611-b251-4508-ba76-fb3897ae8950",
+                            Id = "48c9b4c6-7da9-4c27-81eb-4921838fe32c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f62a0a00-cb27-4da2-a073-1b4a08b53e54",
+                            ConcurrencyStamp = "2756e4c8-fb9e-4a0d-b452-592cad52d1c2",
                             Email = "carter@business.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CARTER@BUSINESS.COM",
                             NormalizedUserName = "CARTER@BUSINESS.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKBB7I6WlO4FwOTuO4Nv/U9666g/OPP1Xrtab9X7RFoedcR/vm/NONgHHJXgTyZgvA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENgsFC2KsiBB4StXvRMm+f8l7f5lkdKcPESTZ3DqySDQy1KE01+xqV2Fk8EtqOer9A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "43201b41-a1f7-42de-9c48-9342bac20082",
+                            SecurityStamp = "0cc3ec4c-1a0b-4d1d-9fe4-054fc6f0be2e",
                             TwoFactorEnabled = false,
                             UserName = "carter@business.com"
                         });
@@ -355,18 +281,18 @@ namespace ECommerceProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "17936c6e-5307-4f92-bede-c7a917b7797a",
-                            RoleId = "af90dc71-a3d9-4141-ae93-dc2221ecbbdb"
+                            UserId = "a382e998-4c02-4ecf-ae92-9aa12cb22fa8",
+                            RoleId = "b8e2992d-9ff8-4162-94e1-74f7d5d29970"
                         },
                         new
                         {
-                            UserId = "17936c6e-5307-4f92-bede-c7a917b7797a",
-                            RoleId = "2f03a767-0632-474a-99d3-2e447c7007b5"
+                            UserId = "a382e998-4c02-4ecf-ae92-9aa12cb22fa8",
+                            RoleId = "b24f9bff-6932-4c9d-8d62-70965891b54c"
                         },
                         new
                         {
-                            UserId = "25658611-b251-4508-ba76-fb3897ae8950",
-                            RoleId = "9aed1ef6-19f5-4f94-b350-df92714bc4ff"
+                            UserId = "48c9b4c6-7da9-4c27-81eb-4921838fe32c",
+                            RoleId = "ca1f092b-5957-44c3-bbb6-2bc31e7a6ffe"
                         });
                 });
 
@@ -389,43 +315,6 @@ namespace ECommerceProject.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("ProductProductCategory", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoriesId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("ProductProductCategory");
-                });
-
-            modelBuilder.Entity("ECommerceProject.Models.Business", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ECommerceProject.Models.Product", b =>
-                {
-                    b.HasOne("ECommerceProject.Models.Business", "Business")
-                        .WithMany("Products")
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Business");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -477,26 +366,6 @@ namespace ECommerceProject.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProductProductCategory", b =>
-                {
-                    b.HasOne("ECommerceProject.Models.ProductCategory", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ECommerceProject.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ECommerceProject.Models.Business", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

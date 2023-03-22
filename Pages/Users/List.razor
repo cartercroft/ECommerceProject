@@ -1,6 +1,8 @@
 ﻿@page "/Users/List"
 @inject ApplicationDbContext _context
+@inject IRoleService _roleService
 @using ECommerceProject.Data
+@using ECommerceProject.Services.Roles
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using CroftBlazorComponents.Grids
@@ -9,21 +11,30 @@
 
 <AuthorizeView>
     <Authorized>
-        <Grid Items="@Users">
-            <Columns Context="columnsContext">
-                <GridColumn HeaderText="Email" Field="@(nameof(IdentityUser.Email))"></GridColumn>
-                <GridColumn Context="columnContext">
+        <h2 class="text-center">Users List</h2>
+        <div class="w-100">
+            <Grid Items="@Users">
+                <Columns Context="columnsContext">
+                    <GridColumn HeaderText="Email" Field="@(nameof(IdentityUser.Email))"></GridColumn>
+                    <GridColumn HeaderText="Username" Field="@(nameof(IdentityUser.UserName))"></GridColumn>
+                    <GridColumn HeaderText="Roles" Context="columnContext">
                     @{
-                        <a href="/Users/Edit/@columnContext.Id">Edit</a>
+                        var roles = _roleService.GetRolesForUser(columnContext);
+                        @roles.Select(x => x.Name).Aggregate((x, y) => x + ", " + y).ToString();
                     }
-                </GridColumn>
-            </Columns>
-        </Grid>
+                    </GridColumn>
+                    <GridColumn Context="columnContext">
+                        @{
+                            <a href="/Users/Edit/@columnContext.Id">Edit</a>
+                        }
+                    </GridColumn>
+                </Columns>
+            </Grid>
+        </div>
     </Authorized>
 </AuthorizeView>
-@code {
+    @code {
     protected List<IdentityUser> Users { get; set; } = new();
-
     protected override async Task OnInitializedAsync()
     {
         Users = await _context.Users.ToListAsync();

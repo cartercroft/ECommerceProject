@@ -1,0 +1,33 @@
+﻿<button type="button" class="btn btn-danger" @onclick=ShowModal>@ButtonText</button>
+<CroftBlazorComponents.ModalComponents.Modal @ref="Modal" ModalTitle=@(ConfirmText)>
+    <ModalBody>
+        <button type="button" class="btn btn-light" @onclick="HandleCancel">Cancel</button>
+        <button type="button" class="btn btn-danger" @onclick="HandleConfirm">Delete</button>
+    </ModalBody>
+</CroftBlazorComponents.ModalComponents.Modal>
+
+@code {
+    private CroftBlazorComponents.ModalComponents.Modal Modal { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DeleteCallback { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; } = "Delete";
+    [Parameter]
+    public string ConfirmText { get; set; } = "";
+    private void HandleCancel()
+    {
+        Modal.Close();
+    }
+
+    private void ShowModal()
+    {
+        Modal.Show();
+    }
+
+    private async void HandleConfirm()
+    {
+        await DeleteCallback.InvokeAsync(true);
+        Modal.Close();
+    }
+}
