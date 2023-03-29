@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerceProject.Models
 {
@@ -17,6 +18,7 @@ namespace ECommerceProject.Models
         [StringLength(250, ErrorMessage = "Description must be 250 characters or less.")]
         [Display(Name = "Description")]
         public string Description { get; set; } = "";
+        [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }
 
     }

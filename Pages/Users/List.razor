@@ -19,9 +19,16 @@
                     <GridColumn HeaderText="Username" Field="@(nameof(IdentityUser.UserName))"></GridColumn>
                     <GridColumn HeaderText="Roles" Context="columnContext">
                     @{
-                        var roles = _roleService.GetRolesForUser(columnContext);
-                        @roles.Select(x => x.Name).Aggregate((x, y) => x + ", " + y).ToString();
-                    }
+                                var roles = _roleService.GetRolesForUser(columnContext);
+                                if(roles.Any())
+                                {
+                                    <span>@(roles.Select(x => x.Name).Aggregate((x, y) => x + ", " + y).ToString())</span>
+                                }
+                                else
+                                {
+                                    <span>None</span>
+                                }
+                            }
                     </GridColumn>
                     <GridColumn Context="columnContext">
                         @{

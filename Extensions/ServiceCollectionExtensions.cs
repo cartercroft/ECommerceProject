@@ -1,5 +1,8 @@
 ﻿using ECommerceProject.Data.Repositories.Roles;
 using ECommerceProject.Data.Repositories.Users;
+using ECommerceProject.Data.Repositories.Businesses;
+using ECommerceProject.Data.Repositories.Products;
+using ECommerceProject.Data.Repositories.ProductCategories;
 
 namespace ECommerceProject.Extensions
 {
@@ -14,6 +17,9 @@ namespace ECommerceProject.Extensions
 
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
+            services.AddTransient<IBusinessRepository, BusinessRepository>();
             return services;
         }
     }

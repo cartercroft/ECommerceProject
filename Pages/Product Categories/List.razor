@@ -1,0 +1,41 @@
+﻿@using ECommerceProject.Models
+@using ECommerceProject.Services.ProductCategories
+@inject IProductCategoryService _productCategoryService
+@inject NavigationManager _navManager
+@page "/Products/Categories/List"
+
+<div>
+    <AuthorizeView Roles="Admin">
+        <button class="btn btn-success" @onclick=@(() => _navManager.NavigateTo("/Products/Categories/Add"))>Add</button>
+    </AuthorizeView>
+    <CroftBlazorComponents.Grids.Grid Items="AllCategories">
+        <Columns>
+            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(ProductCategory.Name)" HeaderText="Name" />
+            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(ProductCategory.Description)" HeaderText="Description" />
+            <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                <button class="btn btn-info">View Products</button>
+                <AuthorizeView Roles="Admin" Context="authorizeContext">
+                    <ECommerceProject.Components.DeleteConfirmModal DeleteCallback=@(() => HandleDelete(columnContext.Id)) ButtonText="Delete" ConfirmText=@($"Are you sure you want to delete the {columnContext.Name} Category?") />
+                    <button class="btn btn-warning" @onclick=@(() => _navManager.NavigateTo($"/Products/Categories/Edit/{columnContext.Id}"))>Edit</button>
+                </AuthorizeView>
+            </CroftBlazorComponents.Grids.GridColumn>
+        </Columns>
+    </CroftBlazorComponents.Grids.Grid>
+</div>
+
+
+@code {
+    private List<ProductCategory> AllCategories { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllCategories = await _productCategoryService.GetAll();
+    }
+
+    protected async Task HandleDelete(int id)
+    {
+        await _productCategoryService.Delete(id);
+        AllCategories = await _productCategoryService.GetAll();
+        await InvokeAsync(StateHasChanged);
+    }
+}

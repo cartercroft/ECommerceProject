@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerceProject.Models
 {
@@ -6,7 +7,7 @@ namespace ECommerceProject.Models
     {
         public Product()
         {
-            Categories = new HashSet<ProductCategory>();
+            Categories = new List<ProductCategory>();
         }
 
         [Key]
@@ -20,8 +21,10 @@ namespace ECommerceProject.Models
         [Required(ErrorMessage = "Price is required.")]
         public decimal Price { get; set; } = 0.00m;
         public string ImageUrl { get; set; } = "";
-        public int BusinessId { get; set; }
+        public int? BusinessId { get; set; } = null!;
         public Business Business { get; set; }
-        public virtual ICollection<ProductCategory> Categories { get; set; }
+        [Required]
+        [MinLength(1, ErrorMessage = "A Product must have at least one category.")]
+        public virtual IList<ProductCategory> Categories { get; set; }
     }
 }

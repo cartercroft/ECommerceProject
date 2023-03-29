@@ -1,0 +1,69 @@
+﻿@using CroftBlazorComponents.Services
+@using ECommerceProject.Models
+@using ECommerceProject.Services.ProductCategories
+@inject IProductCategoryService _productCategoryService
+@inject ToastService _toastService
+@inject NavigationManager _navigationManager
+@attribute [Authorize(Roles = "Admin")]
+@layout MainLayout
+@page "/Products/Categories/Edit/{CategoryId:int?}"
+@page "/Products/Categories/Add"
+
+@if(CurrentCategory == null)
+{
+    <div>Category not found.</div>
+}
+else
+{
+    <EditForm class="responsive-form" Model="@CurrentCategory" OnValidSubmit="HandleValidEditSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label class="form-label">Category Name:</label>
+                <InputText class="form-control" @bind-Value="@CurrentCategory.Name" />
+                <ValidationMessage For=@(() => CurrentCategory.Name) />
+            </div>
+            <div class="form-group">
+                <InputTextArea @bind-Value="@CurrentCategory.Description" />
+                <ValidationMessage For=@(() => CurrentCategory.Description) />
+            </div>
+            <button type="Submit" class="btn btn-success">
+                Save
+            </button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int? CategoryId { get; set; }
+    protected ProductCategory CurrentCategory { get; set; } = new();
+    protected EditTypes EditType { get; set; } = EditTypes.Edit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(CategoryId != null)
+        {
+            CurrentCategory = await _productCategoryService.Get(CategoryId.Value);
+        }
+        else
+        {
+            EditType = EditTypes.Add;
+            CurrentCategory = new();
+        }
+        await base.OnInitializedAsync();
+    }
+
+    protected async void HandleValidEditSubmit()
+    {
+        if(EditType == EditTypes.Edit)
+        { 
+            await _productCategoryService.Update(CurrentCategory);
+            _toastService.ShowToast($"Successfully saved changes to {CurrentCategory.Name}!", ToastLevel.Success);
+        }
+        else
+        {
+            await _productCategoryService.Add(CurrentCategory);
+            _toastService.ShowToast($"Successfully added {CurrentCategory.Name}!", ToastLevel.Success);
+            _navigationManager.NavigateTo("/Products/Categories/List");
+        }
+    }
+}
