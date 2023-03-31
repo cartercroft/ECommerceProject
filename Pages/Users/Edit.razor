@@ -30,30 +30,17 @@ else
             <InputText class="form-control" @bind-Value="CurrentUser.UserName" />
             <ValidationMessage For=@(() => CurrentUser.UserName) />
         </div>
-        @{
-            foreach(var checkbox in RoleCheckboxes)
-            {
-                <label>@checkbox.Role.Name:</label>
-                <InputCheckbox @bind-Value="checkbox.Selected" />
-            }
-        }
+        <CroftBlazorComponents.MultiSelect.MultiSelect Label="Roles" DisplayField=@(nameof(IdentityRole.Name)) @bind-Selected=@(UserRoles) Options="AllRoles" />
         <button class="btn btn-success" type="submit">Save</button>
     </EditForm>
 }
 
 @code {
-    private class RoleCheckbox
-    {
-        public bool Selected { get; set; } = false;
-        public IdentityRole Role { get; set; }
-    }
-
     [Parameter]
     public string UserId { get; set; }
     private IdentityUser? CurrentUser { get; set; } = new();
-    private List<IdentityRole?> AllRoles { get; set; } = new List<IdentityRole?>();
-    private List<IdentityRole> UserRoles { get; set; }
-    private List<RoleCheckbox> RoleCheckboxes { get; set; } = new();
+    private ICollection<IdentityRole?> AllRoles { get; set; } = new List<IdentityRole?>();
+    private ICollection<IdentityRole> UserRoles { get; set; } = new List<IdentityRole>();
     private EditTypes EditType { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
@@ -66,11 +53,6 @@ else
         }
         AllRoles = await _roleService.GetAll();
         UserRoles = await _roleService.GetRolesForUserAsync(CurrentUser);
-        RoleCheckboxes = AllRoles.Select(x => new RoleCheckbox
-            {
-                Selected = UserRoles.Contains(x),
-                Role = x
-            }).ToList();
         await base.OnParametersSetAsync();
     }
     protected override async Task OnInitializedAsync()
@@ -81,7 +63,7 @@ else
     protected async Task HandleValidSubmit()
     {
         await _userService.Update(CurrentUser);
-        await _userService.UpdateRolesForUser(CurrentUser, RoleCheckboxes.Where(x => x.Selected).Select(x => x.Role).ToList());
+        await _userService.UpdateRolesForUser(CurrentUser, UserRoles.ToList());
         _toastService.ShowToast($"Successfully saved changes for {CurrentUser.UserName}!", ToastLevel.Success);
     }
 }

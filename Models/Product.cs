@@ -7,7 +7,7 @@ namespace ECommerceProject.Models
     {
         public Product()
         {
-            Categories = new List<ProductCategory>();
+            Categories = new HashSet<ProductCategory>();
         }
 
         [Key]
@@ -25,6 +25,6 @@ namespace ECommerceProject.Models
         public Business Business { get; set; }
         [Required]
         [MinLength(1, ErrorMessage = "A Product must have at least one category.")]
-        public virtual IList<ProductCategory> Categories { get; set; }
+        public virtual ICollection<ProductCategory> Categories { get; set; }
     }
 }

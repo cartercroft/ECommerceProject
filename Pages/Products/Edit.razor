@@ -16,18 +16,21 @@
 <h2 class="text-center">@(EditType == EditTypes.Edit ? $"Product {CurrentProduct.Name}" : "Add Product")</h2>
 <EditForm Model="@CurrentProduct" OnValidSubmit="HandleValidSubmit" class="row align-items-center responsive-form">
     <DataAnnotationsValidator />
-    <div class="col-auto">
-        <label>Name:</label>
-        <InputText class="form-control" @bind-Value="CurrentProduct.Name" />
-        <ValidationMessage For=@(() => CurrentProduct.Name) />
-    </div>
-    <div class="col-auto">
-        <label>Price:</label>
-        <InputNumber class="form-control" @bind-Value="CurrentProduct.Price" />
-        <ValidationMessage For=@(() => CurrentProduct.Price) />
-    </div>
-    <div class="col-auto">
-        <CroftBlazorComponents.MultiSelect.MultiSelect Label="Categories" DisplayField=@(nameof(ProductCategory.Name)) Options="AllCategories" />
+    <div class="mb-4">
+        <div class="col-auto">
+            <label>Name:</label>
+            <InputText class="form-control" @bind-Value="CurrentProduct.Name" />
+            <ValidationMessage For=@(() => CurrentProduct.Name) />
+        </div>
+        <div class="col-auto">
+            <label>Price:</label>
+            <InputNumber class="form-control" @bind-Value="CurrentProduct.Price" />
+            <ValidationMessage For=@(() => CurrentProduct.Price) />
+        </div>
+        <div class="col-auto">
+            <CroftBlazorComponents.MultiSelect.MultiSelect @bind-Selected=@(CurrentProduct.Categories) Label="Categories" DisplayField=@(nameof(ProductCategory.Name)) Options="AllCategories" />
+            <ValidationMessage For=@(() => CurrentProduct.Categories) />
+        </div>
     </div>
     <button class="btn btn-success" type="submit">Save</button>
 </EditForm>
@@ -65,9 +68,6 @@
     }
     protected async Task HandleValidSubmit()
     {
-        CurrentProduct.Categories = (from category in AllCategories
-        join selectedCategoryId in SelectedCategories on category.Id equals selectedCategoryId 
-        select category).ToList();
         if (EditType == EditTypes.Edit)
         {
             await _productService.Update(CurrentProduct);

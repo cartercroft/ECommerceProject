@@ -43,7 +43,7 @@ namespace ECommerceProject.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Businesses");
+                    b.ToTable("Businesses", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceProject.Models.Product", b =>
@@ -73,7 +73,7 @@ namespace ECommerceProject.Data.Migrations
 
                     b.HasIndex("BusinessId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceProject.Models.ProductCategory", b =>
@@ -96,7 +96,7 @@ namespace ECommerceProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -403,7 +403,7 @@ namespace ECommerceProject.Data.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductProductCategory");
+                    b.ToTable("ProductProductCategory", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceProject.Models.Business", b =>

@@ -1,5 +1,46 @@
-﻿<h3>List</h3>
+﻿@using ECommerceProject.Services.Products
+@using ECommerceProject.Models
+@inject IProductService _productService
+@inject NavigationManager _navManager
+@page "/Products"
+@page "/Products/List"
 
-@code {
+<div>
+    <AuthorizeView Roles="Admin">
+        <button class="btn btn-success" @onclick=@(() => _navManager.NavigateTo("/Products/Add"))>Add</button>
+    </AuthorizeView>
+    <CroftBlazorComponents.Grids.Grid Items="AllProducts">
+        <Columns>
+            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Name)" HeaderText="Name" />
+            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Business)" HeaderText="Sold By" />
+            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Price)" Format="C" HeaderText="Price" />
+            <CroftBlazorComponents.Grids.GridColumn HeaderText="Categories" Context="columnContext">
+                @{
+                        var categories = columnContext.Categories;
+                        if (categories.Any())
+                        {
+                            <span>
+                                @(categories.Select(x => x.Name).Aggregate((x, y) => x + ", " + y).ToString())
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                None.
+                            </span>
+                        }
+                }
+                </CroftBlazorComponents.Grids.GridColumn>
+            </Columns>
+        </CroftBlazorComponents.Grids.Grid>
+    </div>
 
+    @code {
+    public List<Product> AllProducts { get; set; } = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllProducts = await _productService.GetAll();
+        await base.OnInitializedAsync();
+    }
 }
