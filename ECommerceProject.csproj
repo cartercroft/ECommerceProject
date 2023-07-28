@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Images\no_image.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorMultiselectComponent" Version="1.0.1" />
+    <PackageReference Include="CroftBlazorComponents" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.15" />
@@ -27,10 +33,7 @@
   <ItemGroup>
     <Folder Include="Pages\Account\" />
     <Folder Include="Pages\Businesses\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CroftBlazorComponents\CroftBlazorComponents.csproj" />
+    <Folder Include="wwwroot\test\" />
   </ItemGroup>
 
 </Project>

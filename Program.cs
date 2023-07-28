@@ -2,6 +2,7 @@ using CroftBlazorComponents.Extensions;
 using ECommerceProject.Areas.Identity;
 using ECommerceProject.Data;
 using ECommerceProject.Extensions;
+using ECommerceProject.Services.ShoppingCart;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddRazorPages();
 builder.Services.RegisterDataServices();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
 builder.Services.AddComponentServices();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
@@ -39,10 +41,10 @@ else
 
 //UserRoleHelpers.CreateRolesAsync(app.Services, builder.Configuration);
 //UserRoleHelpers.CreateUsersAsync(app.Services);
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
 
 app.UseRouting();
 

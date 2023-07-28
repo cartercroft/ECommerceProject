@@ -1,0 +1,64 @@
+﻿@page "/cart"
+@using ECommerceProject.Models
+@using ECommerceProject.Services.ShoppingCart
+@inject IShoppingCartService _shoppingCartService
+
+<CroftBlazorComponents.Grids.Grid Items="_shoppingCartService.SelectedProducts">
+    <Columns>
+        <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                <ECommerceProject.Components.ImagePreview ImageBytes=@columnContext.ImageBytes DefaultImage=@DefaultProductImage />
+        </CroftBlazorComponents.Grids.GridColumn>
+        <CroftBlazorComponents.Grids.GridColumn HeaderText="Name" Context="columnContext">
+            @columnContext.Name
+        </CroftBlazorComponents.Grids.GridColumn>
+        <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Business)" HeaderText="Sold By" />
+        <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Price)" Format="C" HeaderText="Price" />
+        @*<CroftBlazorComponents.Grids.GridColumn HeaderText="Categories" Context="columnContext">
+            @{
+                    var categories = columnContext.Categories;
+                    if (categories.Any())
+                    {
+                        <span>
+                            @(categories.Select(x => x.Name).Aggregate((x, y) => x + ", " + y).ToString())
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            None.
+                        </span>
+                    }
+                }
+            </CroftBlazorComponents.Grids.GridColumn>*@
+            <AuthorizeView Roles="Customer" Context="authContext">
+                <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                    <button class="btn btn-primary">Remove from Cart</button>
+                </CroftBlazorComponents.Grids.GridColumn>
+            </AuthorizeView>
+        </Columns>
+    </CroftBlazorComponents.Grids.Grid>
+
+    @code {
+    private byte[] DefaultProductImage { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        //Console.WriteLine($"Initializing... Cart count is {_shoppingCartService.SelectedProducts.Count()}");
+        _shoppingCartService.OnChange += OnNotify;
+        if (DefaultProductImage == null || DefaultProductImage.Length == 0)
+        {
+            using (FileStream fs = new FileStream("wwwroot/images/no_image.png", FileMode.Open))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await fs.CopyToAsync(ms);
+                    DefaultProductImage = ms.ToArray();
+                }
+            }
+        }
+        await base.OnInitializedAsync(); 
+    }
+    private async void OnNotify()
+    {
+        await InvokeAsync(() => StateHasChanged());
+    }
+}

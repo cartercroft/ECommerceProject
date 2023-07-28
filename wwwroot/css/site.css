@@ -79,3 +79,12 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+img.image-preview{
+    max-height: 500px;
+    max-width: 300px;
+}
+img.image-preview-small{
+    max-height: 250px;
+    max-width: 150px;
+}

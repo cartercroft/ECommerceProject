@@ -1,0 +1,42 @@
+﻿@if (_isLoading)
+{
+    <div>...</div>
+}
+else
+{
+    <div>
+        <InputFile @ref="InputFileRef" OnChange=@(LoadFiles) />
+        <ImagePreview ImageBytes="@ImageBytes" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long MaxFileSizeBytes { get; set; } = 1024 * 15;
+    private InputFile InputFileRef { get; set; }
+    private ElementReference ImagePreviewElement { get; set; }
+    private byte[] ImageBytes { get; set; }
+    private bool _isLoading = false;
+
+    protected IBrowserFile File { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        _isLoading = true;
+        File = e.File;
+        var newFile = (await File.RequestImageFileAsync(File.ContentType, 150, 150));
+        var buffer = new byte[File.Size];
+        using (var stream = newFile.OpenReadStream())
+        {
+            await stream.ReadAsync(buffer);
+        }
+        ImageBytes = buffer;
+        _isLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

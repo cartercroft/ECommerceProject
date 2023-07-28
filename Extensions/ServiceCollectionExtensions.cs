@@ -3,6 +3,7 @@ using ECommerceProject.Data.Repositories.Users;
 using ECommerceProject.Data.Repositories.Businesses;
 using ECommerceProject.Data.Repositories.Products;
 using ECommerceProject.Data.Repositories.ProductCategories;
+using ECommerceProject.Services.ShoppingCart;
 
 namespace ECommerceProject.Extensions
 {
@@ -14,7 +15,7 @@ namespace ECommerceProject.Extensions
             {
                 x.FromCallingAssembly().AddClasses().AsMatchingInterface();
             });
-
+            services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();

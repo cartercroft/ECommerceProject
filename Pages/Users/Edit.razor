@@ -30,7 +30,7 @@ else
             <InputText class="form-control" @bind-Value="CurrentUser.UserName" />
             <ValidationMessage For=@(() => CurrentUser.UserName) />
         </div>
-        <CroftBlazorComponents.MultiSelect.MultiSelect Label="Roles" DisplayField=@(nameof(IdentityRole.Name)) @bind-Selected=@(UserRoles) Options="AllRoles" />
+        <BlazorMultiSelectComponent.MultiSelect Label="Roles" DisplayField=@(nameof(IdentityRole.Name)) @bind-Selected=@(UserRoles) Options="AllRoles" />
         <button class="btn btn-success" type="submit">Save</button>
     </EditForm>
 }

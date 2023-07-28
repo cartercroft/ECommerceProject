@@ -1,0 +1,54 @@
+﻿@inject IJSRuntime JS
+@if (_isLoading)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <img @ref="ImagePreviewElement" src="/images/no_image.png" class="image-preview-small" />
+}
+
+@code {
+    private bool _isLoading = false;
+
+    [Parameter]
+    public byte[] ImageBytes { get; set; }
+    [Parameter]
+    public byte[] DefaultImage { get; set; }
+    [Parameter]
+    public int? MaxWidthPixels { get; set; }
+    [Parameter]
+    public int? MaxHeightPixels { get; set; }
+
+    private ElementReference ImagePreviewElement { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine($"In OnAfterRender, firstRender: {firstRender}");
+        if(MaxHeightPixels != null && MaxWidthPixels != null)
+        {
+            ResizeImage();
+        }
+
+        if (ImageBytes != null && ImageBytes.Length > 0)
+        {
+            _isLoading = true;
+            await JS.InvokeVoidAsync("showImagePreviewFromByteArray", ImagePreviewElement, ImageBytes);
+        }
+        _isLoading = false;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected async void ResizeImage()
+    {
+        using (MemoryStream myMemStream = new System.IO.MemoryStream())
+        {
+            System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+            System.Drawing.Image newImage = fullsizeImage.GetThumbnailImage(MaxWidthPixels ?? 256, MaxHeightPixels ?? 256, null, IntPtr.Zero);
+            System.IO.MemoryStream myResult = new System.IO.MemoryStream();
+            newImage.Save(myResult, System.Drawing.Imaging.ImageFormat.Png);  //Or whatever format you want.
+            ImageBytes = myResult.ToArray();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

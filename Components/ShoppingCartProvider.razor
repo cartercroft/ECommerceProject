@@ -1,0 +1,33 @@
+﻿@using ECommerceProject.Models
+@using ECommerceProject.Services.ShoppingCart
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject IShoppingCartService _shoppingCartService
+@inject ProtectedSessionStorage browserStorage 
+
+@ChildContent
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        if (!_shoppingCartService.SelectedProducts.Any())
+        {
+            var result = (await browserStorage.GetAsync<List<Product>>("SelectedProducts"));
+            await _shoppingCartService.SetSelectedProducts(result.Value ?? new());
+            _shoppingCartService.OnChange += OnNotify;
+        }
+        await base.OnInitializedAsync();    
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    protected async void OnNotify()
+    {
+        await InvokeAsync(() => StateHasChanged());
+    }
+}

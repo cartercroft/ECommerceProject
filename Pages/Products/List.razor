@@ -1,7 +1,10 @@
 ﻿@using ECommerceProject.Services.Products
+@using ECommerceProject.Services.ShoppingCart
 @using ECommerceProject.Models
 @inject IProductService _productService
+@inject IShoppingCartService _shoppingCartService
 @inject NavigationManager _navManager
+@inject IJSRuntime JS
 @page "/Products"
 @page "/Products/List"
 
@@ -11,7 +14,16 @@
     </AuthorizeView>
     <CroftBlazorComponents.Grids.Grid Items="AllProducts">
         <Columns>
-            <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Name)" HeaderText="Name" />
+            <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                <a href=@($"/Products/Edit/{columnContext.Id}")>
+                    <ECommerceProject.Components.ImagePreview ImageBytes=@columnContext.ImageBytes />
+                </a>
+            </CroftBlazorComponents.Grids.GridColumn>
+            <CroftBlazorComponents.Grids.GridColumn HeaderText="Name" Context="columnContext">
+                <a href=@($"/Products/Edit/{columnContext.Id}")>
+                    @columnContext.Name
+                </a>
+            </CroftBlazorComponents.Grids.GridColumn>
             <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Business)" HeaderText="Sold By" />
             <CroftBlazorComponents.Grids.GridColumn Field="@nameof(Product.Price)" Format="C" HeaderText="Price" />
             <CroftBlazorComponents.Grids.GridColumn HeaderText="Categories" Context="columnContext">
@@ -29,18 +41,36 @@
                                 None.
                             </span>
                         }
-                }
+                    }
                 </CroftBlazorComponents.Grids.GridColumn>
+                <AuthorizeView Roles="Admin" Context="authContext">
+                    <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                        <button class="btn btn-warning" @onclick=@(() => _navManager.NavigateTo($"/Products/Edit/{columnContext.Id}"))>Edit</button>
+                        <ECommerceProject.Components.DeleteConfirmModal ButtonText="Delete" ConfirmText=@($"Are you sure you want to delete {columnContext.Name}?") DeleteCallback=@(() => HandleDelete(columnContext.Id)) />
+                    </CroftBlazorComponents.Grids.GridColumn>
+                </AuthorizeView>
+                <AuthorizeView Roles="Customer" Context="authContext">
+                    <CroftBlazorComponents.Grids.GridColumn Context="columnContext">
+                        <button class="btn btn-primary" type="button" @onclick:preventDefault="true" @onclick="(() => HandleAddToCartClick(columnContext.Id))">Add To Cart</button>
+                    </CroftBlazorComponents.Grids.GridColumn>
+                </AuthorizeView>
             </Columns>
         </CroftBlazorComponents.Grids.Grid>
     </div>
 
     @code {
     public List<Product> AllProducts { get; set; } = new List<Product>();
-
     protected override async Task OnInitializedAsync()
     {
         AllProducts = await _productService.GetAll();
         await base.OnInitializedAsync();
+    }
+    protected async Task HandleAddToCartClick(int productId)
+    {
+        await _shoppingCartService.AddProductToCart(productId);
+    }
+    protected async Task HandleDelete(int productId)
+    {
+        await _productService.Delete(productId);
     }
 }

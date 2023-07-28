@@ -1,9 +1,11 @@
 ﻿@using CroftBlazorComponents.Services
+@using ECommerceProject.Components
 @using ECommerceProject.Models
 @using Microsoft.AspNetCore.Identity
 @using ECommerceProject.Services.Products
 @using Microsoft.EntityFrameworkCore
 @using ECommerceProject.Services.ProductCategories
+@inject IJSRuntime JS
 
 @layout MainLayout
 
@@ -12,11 +14,16 @@
 @inject ToastService _toastService
 @page "/Products/Add"
 @page "/Products/Edit/{ProductId:int}"
-
 <h2 class="text-center">@(EditType == EditTypes.Edit ? $"Product {CurrentProduct.Name}" : "Add Product")</h2>
 <EditForm Model="@CurrentProduct" OnValidSubmit="HandleValidSubmit" class="row align-items-center responsive-form">
     <DataAnnotationsValidator />
     <div class="mb-4">
+        <div class="col-12 text-center">
+            <div class="mb-2">
+                <ImagePreview ImageBytes=CurrentProduct.ImageBytes />
+            </div>
+            <InputFile @ref="InputFileRef" OnChange="HandleImageChange"></InputFile>
+        </div>
         <div class="col-auto">
             <label>Name:</label>
             <InputText class="form-control" @bind-Value="CurrentProduct.Name" />
@@ -28,7 +35,7 @@
             <ValidationMessage For=@(() => CurrentProduct.Price) />
         </div>
         <div class="col-auto">
-            <CroftBlazorComponents.MultiSelect.MultiSelect @bind-Selected=@(CurrentProduct.Categories) Label="Categories" DisplayField=@(nameof(ProductCategory.Name)) Options="AllCategories" />
+            <BlazorMultiSelectComponent.MultiSelect @bind-Selected=@(CurrentProduct.Categories) Label="Categories" DisplayField=@(nameof(ProductCategory.Name)) Options="AllCategories" />
             <ValidationMessage For=@(() => CurrentProduct.Categories) />
         </div>
     </div>
@@ -36,8 +43,12 @@
 </EditForm>
 
 @code {
+    private byte[] _noImageFoundBytes;
+
     [Parameter]
     public int? ProductId { get; set; }
+    private InputFile InputFileRef { get; set; }
+    private ElementReference ImagePreviewElement { get; set; }
     private Product CurrentProduct { get; set; } = new();
     private List<ProductCategory> AllCategories { get; set; } = new List<ProductCategory>();
     private int[] SelectedCategories { get; set; } = new int[] { };
@@ -51,7 +62,20 @@
         }
         else
         {
+            CurrentProduct = await _productService.Get(ProductId!.Value);
             EditType = EditTypes.Edit;
+        }
+
+        if(_noImageFoundBytes == null || _noImageFoundBytes.Length == 0)
+        {
+            using(FileStream fs = new FileStream("wwwroot/images/no_image.png", FileMode.Open))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await fs.CopyToAsync(ms);
+                    _noImageFoundBytes = ms.ToArray();
+                }
+            }
         }
         await base.OnParametersSetAsync();
     }
@@ -59,12 +83,23 @@
     {
         await base.OnInitializedAsync();
     }
-    protected async Task OnCategorySelectChange(int categoryId)
+    protected async Task HandleImageChange(InputFileChangeEventArgs e)
     {
-        var foundCategory = AllCategories.Find(x => x.Id == categoryId);
-        if(foundCategory != null)
+        CurrentProduct.ImageFile = e.File;
+        using (var ms = new MemoryStream())
+        {
+            await e.File.OpenReadStream().CopyToAsync(ms);
+            CurrentProduct.ImageBytes = ms.ToArray();
+        }
+        Console.WriteLine("State Has Changed EDIT");
+        await InvokeAsync(StateHasChanged);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(CurrentProduct.ImageBytes != null && CurrentProduct.ImageBytes.Length > 0)
         {
         }
+        await base.OnAfterRenderAsync(firstRender);
     }
     protected async Task HandleValidSubmit()
     {

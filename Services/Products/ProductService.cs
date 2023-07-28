@@ -1,12 +1,13 @@
 ﻿using ECommerceProject.Data;
 using ECommerceProject.Models;
+using ECommerceProject.Services.Images;
 
 namespace ECommerceProject.Services.Products
 {
     public class ProductService : IProductService
     {
         private IRepositoryManager _repositoryManager;
-        public ProductService(IRepositoryManager repositoryManager)
+        public ProductService(IRepositoryManager repositoryManager, IImageUploadService imageUploadService)
         {
             _repositoryManager = repositoryManager;
         }
@@ -26,7 +27,8 @@ namespace ECommerceProject.Services.Products
 
         public async Task<Product?> Get(int id)
         {
-            return await _repositoryManager.Products.Get(id);
+            Product result = await _repositoryManager.Products.Get(id);
+            return result;
         }
 
         public async Task<List<Product?>?> GetAll()

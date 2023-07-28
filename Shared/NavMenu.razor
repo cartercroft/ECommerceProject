@@ -1,4 +1,5 @@
-﻿
+﻿@using ECommerceProject.Services.ShoppingCart
+@inject IShoppingCartService _shoppingCartService 
 <div class="sidebar d-flex flex-column align-align-items-end">
     <div class="top-row ps-3 navbar navbar-dark">
         <div class="container-fluid">
@@ -23,6 +24,13 @@
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/Products">
                     <span class="oi oi-cart"></span>Shop    
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="Customer">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/Cart">
+                    <span class="oi oi-cart"></span>Cart (@(_shoppingCartService.SelectedProducts.Count) Items)
                 </NavLink>
             </div>
         </AuthorizeView>
@@ -76,5 +84,14 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _shoppingCartService.OnChange += OnNotify;
+        await base.OnInitializedAsync();
+    }
+    protected async void OnNotify()
+    {
+        await InvokeAsync(() => StateHasChanged());
     }
 }
