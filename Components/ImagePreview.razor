@@ -24,7 +24,6 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Console.WriteLine($"In OnAfterRender, firstRender: {firstRender}");
         if(MaxHeightPixels != null && MaxWidthPixels != null)
         {
             ResizeImage();
@@ -32,8 +31,8 @@ else
 
         if (ImageBytes != null && ImageBytes.Length > 0)
         {
-            _isLoading = true;
             await JS.InvokeVoidAsync("showImagePreviewFromByteArray", ImagePreviewElement, ImageBytes);
+            _isLoading = true;
         }
         _isLoading = false;
         await base.OnAfterRenderAsync(firstRender);

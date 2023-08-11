@@ -7,7 +7,8 @@ else
     <div>
         <InputFile @ref="InputFileRef" OnChange=@(LoadFiles) />
         <ImagePreview ImageBytes="@ImageBytes" />
-    </div>
+        <div class="text-danger" @ref="ErrorDivRef"></div>
+    </div> 
 }
 
 @code {
@@ -15,6 +16,7 @@ else
     public long MaxFileSizeBytes { get; set; } = 1024 * 15;
     private InputFile InputFileRef { get; set; }
     private ElementReference ImagePreviewElement { get; set; }
+    private ElementReference ErrorDivRef { get; set; }
     private byte[] ImageBytes { get; set; }
     private bool _isLoading = false;
 
