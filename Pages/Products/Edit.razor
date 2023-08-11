@@ -91,7 +91,6 @@
             await e.File.OpenReadStream().CopyToAsync(ms);
             CurrentProduct.ImageBytes = ms.ToArray();
         }
-        Console.WriteLine("State Has Changed EDIT");
         await InvokeAsync(StateHasChanged);
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
